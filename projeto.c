@@ -94,11 +94,14 @@ int particao(int *v, int LI, int LS)
 
 void InsertAleatorio(){
     struct item prin[500000];
+    double tempo;
     for(int geracao = 0; geracao <20; geracao++){
         for(int i = 0; i < 500000; i++){
-            princ[] = AleatorioInt();
-
+            prin[i].chave = AleatorioInt();
+            prin[i].nave = AleatorioFloat();
         }
+        tempo = insercao(prin,500000);
+        printf("%d",tempo);
     }
 }
 void InsertCrescente(){
