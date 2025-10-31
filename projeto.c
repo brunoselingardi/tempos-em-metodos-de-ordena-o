@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
+#define MAX 500
 
 struct item
 {
@@ -46,14 +47,17 @@ float AleatorioFloat()
 //Insertion Sort
 double insercao(struct item *v, int n) {
     clock_t inicio, fim;
+    struct item aux;
     int i, j;
     inicio = clock();
     for(i = 1; i < n; i++) {
-        for(j = i; j >= 0; j--) {
+        for(j = i; j > 0; j--) {
             if(v[j-1].chave < v[j].chave) {
-                int aux = v[j-1].chave;
-                v[j-1].chave = v[j].chave;
-                v[j].chave = aux;
+                aux = v[j-1];
+                v[j-1] = v[j];
+                v[j] = aux;
+            } else {
+                break;
             }
         }
     }
@@ -61,19 +65,6 @@ double insercao(struct item *v, int n) {
     double tempo_decorrido = ((double)(fim - inicio)) / CLOCKS_PER_SEC;
     return tempo_decorrido;
 }
-
-//quick sort
-void quicksort(int *v, int LI, int LS)
-{
-    if(LI<LS)
-    {
-        int p,i;
-        p = particao(v,LI,LS);
-        quicksort(v,LI,p-1);
-        quicksort(v,p+1,LS);
-    }
-}
-
 
 int particao(int *v, int LI, int LS)
 {
@@ -92,29 +83,66 @@ int particao(int *v, int LI, int LS)
     return d;
 }
 
+//quick sort
+void quicksort(int *v, int LI, int LS)
+{
+    if(LI<LS)
+    {
+        int p,i;
+        p = particao(v,LI,LS);
+        quicksort(v,LI,p-1);
+        quicksort(v,p+1,LS);
+    }
+}
+
+
 void InsertAleatorio(){
-    struct item prin[500000];
+    struct item prin[MAX];
     double tempo;
     for(int geracao = 0; geracao <20; geracao++){
-        for(int i = 0; i < 500000; i++){
+        for(int i = 0; i < MAX; i++){
             prin[i].chave = AleatorioInt();
             prin[i].nave = AleatorioFloat();
+            printf("%d\n",prin[i].chave);
         }
-        tempo = insercao(prin,500000);
-        printf("%d",tempo);
+        
+        tempo = insercao(prin,MAX);
+        for(int i = 0; i < MAX; i++){
+            printf("Teste: %d\n",prin[i].chave);
+        }
+
+        printf("%f",tempo);
     }
 }
 void InsertCrescente(){
     struct item prin[500000];
-    for(int i = 0; i <20; i++){
+    double tempo;
+    int start = AleatorioInt();
+    for(int geracao = 0; geracao <20; geracao++){
+        for(int i = 0; i < MAX; i++){
+            prin[i].chave = start + i*200;
+            prin[i].nave = AleatorioFloat();
+            printf("%d\n",prin[i].chave);
+        }
+        
+        tempo = insercao(prin,MAX);
+        for(int i = 0; i < MAX; i++){
+            printf("Teste: %d\n",prin[i].chave);
+        }
 
+        printf("%f",tempo);
     }
 }
 void QuickAleatorio(){
     struct item prin[500000];
-    for(int i = 0; i <20; i++){
-
-    }
+    double tempo;
+    //for(int geracao = 0; geracao <20; geracao++){
+        for(int i = 0; i < MAX; i++){
+            prin[i].chave = AleatorioInt();
+            prin[i].nave = AleatorioFloat();
+            printf("%d\n",prin[i].chave);
+        }
+    //}
 }
 void QuickCrescente(){
     struct item prin[500000];
@@ -124,11 +152,11 @@ void QuickCrescente(){
 }
 
 int main(){
-    srand(time(1000));
+    srand(time(NULL));
     int sera = 1;
     int res;
     while(sera){
-        printf("(1) Insert aleatorio \n\n(2) Insert em ordem crescente \n\n(3) Quick aleatorio \n\n(4) Quick em ordem crescente\n\n(5) Sair\n\n> ");
+        printf("(1) Insert (Vetor aleatorio)\n\n(2) Insert (Vetor crescente)\n\n(3) Quick (aleatorio) \n\n(4) Quick (crescente)\n\n(5) Sair\n\n> ");
         scanf("%d", &res);
         switch (res){
             case 1:
@@ -136,15 +164,14 @@ int main(){
                 break;
 
             case 2:
-                clock_t inicio, fim;
-                inicio = clock();
-
-                fim = clock();
+                InsertCrescente();
                 break;
-
             case 3:
+                /*clock_t inicio, fim;
+                inicio = clock();
+                fim = clock();
+                */
                 break;
-
             case 4:
                 break;
             case 5:
