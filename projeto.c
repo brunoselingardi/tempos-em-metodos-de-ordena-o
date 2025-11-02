@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#define MAX 500
+#define MAX 5000
 
 struct item
 {
@@ -30,19 +30,6 @@ float AleatorioFloat()
 
     return gerado;
 }
-//selection sort
-/*void selecao(struct item *v, int n){
-    int i, j, min;
-    for(i = 0; i < n - 1; i++){
-        min = i;
-        for(j = i + 1; j < n; j++){
-            if(v[j].chave < v[min].chave)
-                min = j;
-        }
-        troca(v[i], v[min]);
-    }
-}*/
-
 
 //Insertion Sort
 double insercao(struct item *v, int n) {
@@ -66,14 +53,15 @@ double insercao(struct item *v, int n) {
     return tempo_decorrido;
 }
 
-int particao(int *v, int LI, int LS)
+int particao(struct item *v, int LI, int LS)
 {
-    int aux, pivo, e=LI, d=LS;
-    pivo=v[e];
+    struct item aux;
+    int pivo, e=LI, d=LS;
+    pivo=v[e].chave;
     while(e < d)
     {
-        while((v[e]<=pivo)&& (e<LS)) { e++;}
-        while((v[d]>pivo)&&(d>LI)) {d--;}
+        while((v[e].chave<=pivo)&& (e<LS)) { e++;}
+        while((v[d].chave>pivo)&&(d>LI)) {d--;}
         if(e<d)
         {
             aux = v[e]; v[e]=v[d]; v[d]=aux;
@@ -84,7 +72,7 @@ int particao(int *v, int LI, int LS)
 }
 
 //quick sort
-void quicksort(int *v, int LI, int LS)
+void quicksort(struct item *v, int LI, int LS)
 {
     if(LI<LS)
     {
@@ -95,60 +83,88 @@ void quicksort(int *v, int LI, int LS)
     }
 }
 
+void fill_aleatorio(struct item *v){
+    for(int i = 0; i < MAX; i++){
+        v[i].chave = AleatorioInt();
+        v[i].nave = AleatorioFloat();
+        printf("%d\n",v[i].chave);
+    }
+}
 
+void fill_crescente(struct item *v){
+    int start = AleatorioInt();
+    for(int i = 0; i < MAX; i++){
+        v[i].chave = start + i*200;
+        v[i].nave = AleatorioFloat();
+        printf("%d\n",v[i].chave);
+    }
+}
+
+void teste_vetor(struct item *v){
+    for(int i = 0; i < MAX; i++){
+        printf("%d\n",v[i].chave);
+    }
+}
+
+void print_resultados(double *tempo){
+    double soma = 0;
+    double media;
+    for(int i = 0; i < 20; i++){
+        printf("[%d] %f\n", i+1, tempo[i]);
+        soma += tempo[i];
+    }
+    media = soma/20;
+    printf("Media: %f\n", media);
+}
+// Métodos de Ordenação
 void InsertAleatorio(){
     struct item prin[MAX];
-    double tempo;
+    double tempo[20];
     for(int geracao = 0; geracao <20; geracao++){
-        for(int i = 0; i < MAX; i++){
-            prin[i].chave = AleatorioInt();
-            prin[i].nave = AleatorioFloat();
-            printf("%d\n",prin[i].chave);
-        }
-        
-        tempo = insercao(prin,MAX);
-        for(int i = 0; i < MAX; i++){
-            printf("Teste: %d\n",prin[i].chave);
-        }
-
-        printf("%f",tempo);
+        fill_aleatorio(prin);
+        tempo[geracao] = insercao(prin,MAX);
+        teste_vetor(prin);
     }
+    print_resultados(tempo);
 }
 void InsertCrescente(){
-    struct item prin[500000];
-    double tempo;
-    int start = AleatorioInt();
+    struct item prin[MAX];
+    double tempo[20];
     for(int geracao = 0; geracao <20; geracao++){
-        for(int i = 0; i < MAX; i++){
-            prin[i].chave = start + i*200;
-            prin[i].nave = AleatorioFloat();
-            printf("%d\n",prin[i].chave);
-        }
-        
-        tempo = insercao(prin,MAX);
-        for(int i = 0; i < MAX; i++){
-            printf("Teste: %d\n",prin[i].chave);
-        }
-
-        printf("%f",tempo);
+        fill_crescente(prin);
+        tempo[geracao] = insercao(prin,MAX);
+        teste_vetor(prin);
     }
+    print_resultados(tempo);
 }
+
 void QuickAleatorio(){
-    struct item prin[500000];
-    double tempo;
-    //for(int geracao = 0; geracao <20; geracao++){
-        for(int i = 0; i < MAX; i++){
-            prin[i].chave = AleatorioInt();
-            prin[i].nave = AleatorioFloat();
-            printf("%d\n",prin[i].chave);
-        }
-    //}
+    struct item prin[MAX];
+    double tempo_decorrido[20];
+    clock_t inicio, fim;
+    for(int geracao = 0; geracao <20; geracao++){
+        fill_aleatorio(prin);
+        inicio = clock();
+        quicksort(prin, 0, MAX-1);
+        fim = clock();
+        tempo_decorrido[geracao] = ((double)(fim - inicio)) / CLOCKS_PER_SEC;
+        teste_vetor(prin);
+    }
+    print_resultados(tempo_decorrido);
 }
 void QuickCrescente(){
-    struct item prin[500000];
+    struct item prin[MAX];
+    double tempo_decorrido[20];
+    clock_t inicio, fim;
     for(int i = 0; i <20; i++){
-
+        fill_crescente(prin);
+        inicio = clock();
+        quicksort(prin, 0, MAX-1);
+        fim = clock();
+        tempo_decorrido[i] = ((double)(fim - inicio)) / CLOCKS_PER_SEC;
+        teste_vetor(prin);
     }
+    print_resultados(tempo_decorrido);
 }
 
 int main(){
@@ -162,17 +178,14 @@ int main(){
             case 1:
                 InsertAleatorio();
                 break;
-
             case 2:
                 InsertCrescente();
                 break;
             case 3:
-                /*clock_t inicio, fim;
-                inicio = clock();
-                fim = clock();
-                */
+                QuickAleatorio();
                 break;
             case 4:
+                QuickCrescente();
                 break;
             case 5:
                 sera = 0;
