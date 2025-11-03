@@ -1,3 +1,4 @@
+#include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
@@ -60,14 +61,16 @@ int particao(struct item *v, int LI, int LS)
     pivo=v[e].chave;
     while(e < d)
     {
-        while((v[e].chave<=pivo)&& (e<LS)) { e++;}
-        while((v[d].chave>pivo)&&(d>LI)) {d--;}
+        while((v[e].chave>pivo)&& (e<LS)) { e++;}
+        while((v[d].chave<=pivo)&&(d>LI)) {d--;}
         if(e<d)
         {
-            aux = v[e]; v[e]=v[d]; v[d]=aux;
+            aux = v[e];
+            v[e]=v[d]; 
+            v[d]=aux;
         }
+        printf("e: %d, d: %d, pivo: %d\n", e, d, pivo);
     }
-    aux = v[LI]; v[LI]=v[d]; v[d]=aux;
     return d;
 }
 
@@ -76,9 +79,14 @@ void quicksort(struct item *v, int LI, int LS)
 {
     if(LI<LS)
     {
-        int p,i;
+        int p;
         p = particao(v,LI,LS);
-        quicksort(v,LI,p-1);
+        // Ordena os subvetores
+
+        //Maiores que o pivo (esquerda)
+        quicksort(v,LI,p);
+
+        //Menores que o pivo (direita)
         quicksort(v,p+1,LS);
     }
 }
@@ -87,7 +95,7 @@ void fill_aleatorio(struct item *v){
     for(int i = 0; i < MAX; i++){
         v[i].chave = AleatorioInt();
         v[i].nave = AleatorioFloat();
-        printf("%d\n",v[i].chave);
+        printf("Preenchendo Vetor: %d\n",v[i].chave);
     }
 }
 
@@ -96,25 +104,32 @@ void fill_crescente(struct item *v){
     for(int i = 0; i < MAX; i++){
         v[i].chave = start + i*200;
         v[i].nave = AleatorioFloat();
-        printf("%d\n",v[i].chave);
+        printf("Preenchendo Vetor Crescente: %d\n",v[i].chave);
     }
 }
 
 void teste_vetor(struct item *v){
     for(int i = 0; i < MAX; i++){
-        printf("%d\n",v[i].chave);
+        printf("Ordem Vetor[%d]: %d\n",i,v[i].chave);
     }
 }
 
 void print_resultados(double *tempo){
     double soma = 0;
     double media;
+    double desvio_padrao;
     for(int i = 0; i < 20; i++){
         printf("[%d] %f\n", i+1, tempo[i]);
         soma += tempo[i];
     }
     media = soma/20;
+    for(int i = 0; i < 20; i++){
+        desvio_padrao += (tempo[i] - media) * (tempo[i] - media);
+    }
+    desvio_padrao = sqrt(desvio_padrao/20);
+    
     printf("Media: %f\n", media);
+    printf("Desvio Padrao: %f\n", desvio_padrao);
 }
 // Métodos de Ordenação
 void InsertAleatorio(){
