@@ -1,7 +1,7 @@
-#include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
+#include <math.h>
 #define MAX 5000
 
 struct item
@@ -54,7 +54,7 @@ double insercao(struct item *v, int n) {
     return tempo_decorrido;
 }
 
-int particao(struct item *v, int LI, int LS)
+int particao_LI(struct item *v, int LI, int LS)
 {
     struct item aux;
     int pivo, e=LI, d=LS;
@@ -75,22 +75,61 @@ int particao(struct item *v, int LI, int LS)
 }
 
 //quick sort
-void quicksort(struct item *v, int LI, int LS)
+void quicksort_LI(struct item *v, int LI, int LS)
 {
     if(LI<LS)
     {
         int p;
-        p = particao(v,LI,LS);
+        p = particao_LI(v,LI,LS);
         // Ordena os subvetores
 
         //Maiores que o pivo (esquerda)
-        quicksort(v,LI,p);
+        quicksort_LI(v,LI,p);
 
         //Menores que o pivo (direita)
-        quicksort(v,p+1,LS);
+        quicksort_LI(v,p+1,LS);
     }
 }
 
+int particao_LS(struct item *v, int LI, int LS) 
+{
+    struct item aux;
+    int pivo = v[LS].chave;
+    // 2. 'i' é a "muralha" dos maiores
+    int i = LI - 1;
+    int j;
+
+    for(j = LI; j < LS; j++) 
+    {
+        // 3. Ordem Decrescente: se v[j] > pivô...
+        if(v[j].chave > pivo) 
+        {
+            // 4. ...aumenta a muralha e troca v[i] com v[j]
+            i++;
+            aux = v[i];
+            v[i] = v[j];
+            v[j] = aux;
+        }
+    }
+    
+    // 5. Coloca o pivô no seu lugar final (logo após a muralha)
+    aux = v[i + 1];
+    v[i + 1] = v[LS];
+    v[LS] = aux;
+    
+    return (i + 1); // Retorna a posição FINAL do pivô
+}
+
+void quicksort_LS(struct item *v, int LI, int LS){
+    if(LI < LS) 
+    {
+        int p;
+        p = particao_LS(v, LI, LS);
+        // Recursão de Lomuto (EXCLUI o 'p' das chamadas)
+        quicksort_LS(v, LI, p - 1);
+        quicksort_LS(v, p + 1, LS);
+    }
+}
 void fill_aleatorio(struct item *v){
     for(int i = 0; i < MAX; i++){
         v[i].chave = AleatorioInt();
@@ -117,12 +156,22 @@ void teste_vetor(struct item *v){
 void print_resultados(double *tempo){
     double soma = 0;
     double media;
+    double mediana;
     double desvio_padrao;
+    double pior_tempo = tempo[0];
+    double melhor_tempo = tempo[0];
     for(int i = 0; i < 20; i++){
         printf("[%d] %f\n", i+1, tempo[i]);
         soma += tempo[i];
+        if(tempo[i] > pior_tempo){
+            pior_tempo = tempo[i];
+        }
+        if(tempo[i] < melhor_tempo){
+            melhor_tempo = tempo[i];
+        }
     }
     media = soma/20;
+    mediana = soma/2;
     for(int i = 0; i < 20; i++){
         desvio_padrao += (tempo[i] - media) * (tempo[i] - media);
     }
@@ -130,6 +179,9 @@ void print_resultados(double *tempo){
     
     printf("Media: %f\n", media);
     printf("Desvio Padrao: %f\n", desvio_padrao);
+    printf("Pior Tempo: %f\n", pior_tempo);
+    printf("Melhor Tempo: %f\n", melhor_tempo);
+    printf("Mediana: %f\n", mediana);
 }
 // Métodos de Ordenação
 void InsertAleatorio(){
@@ -160,7 +212,7 @@ void QuickAleatorio(){
     for(int geracao = 0; geracao <20; geracao++){
         fill_aleatorio(prin);
         inicio = clock();
-        quicksort(prin, 0, MAX-1);
+        quicksort_LS(prin, 0, MAX-1);
         fim = clock();
         tempo_decorrido[geracao] = ((double)(fim - inicio)) / CLOCKS_PER_SEC;
         teste_vetor(prin);
@@ -174,7 +226,7 @@ void QuickCrescente(){
     for(int i = 0; i <20; i++){
         fill_crescente(prin);
         inicio = clock();
-        quicksort(prin, 0, MAX-1);
+        quicksort_LI(prin, 0, MAX-1);
         fim = clock();
         tempo_decorrido[i] = ((double)(fim - inicio)) / CLOCKS_PER_SEC;
         teste_vetor(prin);
