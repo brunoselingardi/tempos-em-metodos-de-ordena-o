@@ -2,13 +2,15 @@
 #include <stdio.h>
 #include <time.h>
 #include <math.h>
-#define MAX 5000
+#define MAX 5000000
 
 struct item
 {
     int chave;
     float nave;
 };
+
+struct item prin[MAX];
 
 int AleatorioInt()
 {
@@ -185,7 +187,7 @@ void print_resultados(double *tempo){
 }
 // Métodos de Ordenação
 void InsertAleatorio(){
-    struct item prin[MAX];
+
     double tempo[20];
     for(int geracao = 0; geracao <20; geracao++){
         fill_aleatorio(prin);
@@ -195,7 +197,7 @@ void InsertAleatorio(){
     print_resultados(tempo);
 }
 void InsertCrescente(){
-    struct item prin[MAX];
+
     double tempo[20];
     for(int geracao = 0; geracao <20; geracao++){
         fill_crescente(prin);
@@ -206,7 +208,7 @@ void InsertCrescente(){
 }
 
 void QuickAleatorio(){
-    struct item prin[MAX];
+    ;
     double tempo_decorrido[20];
     clock_t inicio, fim;
     for(int geracao = 0; geracao <20; geracao++){
@@ -220,7 +222,7 @@ void QuickAleatorio(){
     print_resultados(tempo_decorrido);
 }
 void QuickCrescente(){
-    struct item prin[MAX];
+
     double tempo_decorrido[20];
     clock_t inicio, fim;
     for(int i = 0; i <20; i++){
