@@ -41,7 +41,6 @@ struct Tempos {
   double tempo_quick_crescente_meio;
 };
 
-// Insertion Sort
 double insercao(struct item *v, int n) {
   clock_t inicio, fim;
   struct item aux;
