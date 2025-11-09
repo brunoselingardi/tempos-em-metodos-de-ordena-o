@@ -532,6 +532,7 @@ void testAll(int *semente) {
     fill_crescente(original);
     memcpy(temp, original, MAX * sizeof(struct item));
     tempos[i].tempo_insert_crescente = insercao(temp, MAX);
+    printf("Inserção Crescente %d: %f\n", i, tempos[i].tempo_insert_crescente);
 
     memcpy(temp, original, MAX * sizeof(struct item));
     inicio = clock();
@@ -566,9 +567,80 @@ void testAll(int *semente) {
   free(temp);
 }
 
+void umTest() {
+  struct item *original = malloc(MAX * sizeof(struct item));
+  struct item *temp = malloc(MAX * sizeof(struct item));
+  double tempo;
+  int semente;
+  clock_t inicio, fim;
+  printf("Digite uma semente: \n");
+  scanf("%d", &semente);
+  printf("Iniciando testes...\n");
+
+  srand(semente);
+  fill_aleatorio(original);
+
+  memcpy(temp, original, MAX * sizeof(struct item));
+  tempo = insercao(temp, MAX);
+  printf("Inserção Aleatória: %f\n", tempo);
+
+  memcpy(temp, original, MAX * sizeof(struct item));
+  inicio = clock();
+  quicksort_LI(temp, 0, MAX - 1);
+  fim = clock();
+  tempo = ((double)(fim - inicio)) / CLOCKS_PER_SEC;
+  printf("QuickSort LI Aleatorio: %f\n",tempo);
+
+  memcpy(temp, original, MAX * sizeof(struct item));
+  inicio = clock();
+  quicksort_LS(temp, 0, MAX - 1);
+  fim = clock();
+  tempo = ((double)(fim - inicio)) / CLOCKS_PER_SEC;
+  printf("QuickSort LS Aleatorio: %f\n", tempo);
+
+  memcpy(temp, original, MAX * sizeof(struct item));
+  inicio = clock();
+  quicksort_meio(temp, 0, MAX - 1);
+  fim = clock();
+  tempo= ((double)(fim - inicio)) / CLOCKS_PER_SEC;
+  printf("QuickSort Meio Aleatorio: %f\n",tempo);
+
+  srand(semente);
+  fill_crescente(original);
+  memcpy(temp, original, MAX * sizeof(struct item));
+  tempo = insercao(temp, MAX);
+  printf("Inserção Crescente: %f\n", tempo);
+
+  memcpy(temp, original, MAX * sizeof(struct item));
+  inicio = clock();
+  quicksort_LI(temp, 0, MAX - 1);
+  fim = clock();
+  tempo = ((double)(fim - inicio)) / CLOCKS_PER_SEC;
+  printf("QuickSort LI Crescente: %f\n", tempo);
+
+  memcpy(temp, original, MAX * sizeof(struct item));
+  inicio = clock();
+  quicksort_LS(temp, 0, MAX - 1);
+  fim = clock();
+  tempo = ((double)(fim - inicio)) / CLOCKS_PER_SEC;
+  printf("QuickSort LS Crescente: %f\n", tempo);
+
+  memcpy(temp, original, MAX * sizeof(struct item));
+  inicio = clock();
+  quicksort_meio(temp, 0, MAX - 1);
+  fim = clock();
+  tempo = ((double)(fim - inicio)) / CLOCKS_PER_SEC;
+  printf("QuickSort Meio Crescente: %f\n",tempo);
+
+  printf("...Teste concluido.\n");
+  free(original);
+  free(temp);
+}
+
 int main() {
   int sementes[20] = {10,  30,  50,  70,  90,  110, 130, 150, 170, 190,
-                      210, 230, 250, 270, 290, 310, 330, 350, 370, 390};
+                      210, 230, 250, 270, 290, 310, 330, 350, 370, 
+                      390};
   int sera = 1, res;
 
   while (sera) {
@@ -577,8 +649,9 @@ int main() {
     printf("(2) Testar Insert (Crescente)\n");
     printf("(3) Testar Quick (Aleatorio)\n");
     printf("(4) Testar Quick (Crescente)\n");
-    printf("(5) Rodar TUDO e Gerar Relatorio Final\n");
-    printf("(6) Sair\n> ");
+    printf("(5) Rodar para uma seed especifica\n");
+    printf("(6) Rodar TUDO e Gerar Relatorio Final\n");
+    printf("(7) Sair\n> ");
     scanf("%d", &res);
     switch (res) {
     case 1:
@@ -594,9 +667,12 @@ int main() {
       QuickCrescente();
       break;
     case 5:
-      testAll(sementes);
+      umTest();
       break;
     case 6:
+      testAll(sementes);
+      break;
+    case 7:
       sera = 0;
       break;
     default:
