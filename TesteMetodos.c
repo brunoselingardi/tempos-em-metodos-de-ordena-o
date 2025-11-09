@@ -505,27 +505,28 @@ void testAll(int *semente) {
 
     memcpy(temp, original, MAX * sizeof(struct item));
     tempos[i].tempo_insert_aleatorio = insercao(temp, MAX);
+    printf("Inserção Aleatória %d: %f\n", i, tempos[i].tempo_insert_aleatorio);
 
     memcpy(temp, original, MAX * sizeof(struct item));
     inicio = clock();
     quicksort_LI(temp, 0, MAX - 1);
     fim = clock();
-    tempos[i].tempo_quick_aleatorio_li =
-        ((double)(fim - inicio)) / CLOCKS_PER_SEC;
+    tempos[i].tempo_quick_aleatorio_li = ((double)(fim - inicio)) / CLOCKS_PER_SEC;
+    printf("QuickSort LI %d: %f\n", i, tempos[i].tempo_quick_aleatorio_li);
 
     memcpy(temp, original, MAX * sizeof(struct item));
     inicio = clock();
     quicksort_LS(temp, 0, MAX - 1);
     fim = clock();
-    tempos[i].tempo_quick_aleatorio_ls =
-        ((double)(fim - inicio)) / CLOCKS_PER_SEC;
+    tempos[i].tempo_quick_aleatorio_ls = ((double)(fim - inicio)) / CLOCKS_PER_SEC;
+    printf("QuickSort LS %d: %f\n", i, tempos[i].tempo_quick_aleatorio_ls);
 
     memcpy(temp, original, MAX * sizeof(struct item));
     inicio = clock();
     quicksort_meio(temp, 0, MAX - 1);
     fim = clock();
-    tempos[i].tempo_quick_aleatorio_meio =
-        ((double)(fim - inicio)) / CLOCKS_PER_SEC;
+    tempos[i].tempo_quick_aleatorio_meio = ((double)(fim - inicio)) / CLOCKS_PER_SEC;
+    printf("QuickSort Meio %d: %f\n", i, tempos[i].tempo_quick_aleatorio_meio);
 
     srand(semente[i]);
     fill_crescente(original);
@@ -536,22 +537,22 @@ void testAll(int *semente) {
     inicio = clock();
     quicksort_LI(temp, 0, MAX - 1);
     fim = clock();
-    tempos[i].tempo_quick_crescente_li =
-        ((double)(fim - inicio)) / CLOCKS_PER_SEC;
+    tempos[i].tempo_quick_crescente_li = ((double)(fim - inicio)) / CLOCKS_PER_SEC;
+    printf("QuickSort LI %d: %f\n", i, tempos[i].tempo_quick_crescente_li);
 
     memcpy(temp, original, MAX * sizeof(struct item));
     inicio = clock();
     quicksort_LS(temp, 0, MAX - 1);
     fim = clock();
-    tempos[i].tempo_quick_crescente_ls =
-        ((double)(fim - inicio)) / CLOCKS_PER_SEC;
+    tempos[i].tempo_quick_crescente_ls = ((double)(fim - inicio)) / CLOCKS_PER_SEC;
+    printf("QuickSort LS %d: %f\n", i, tempos[i].tempo_quick_crescente_ls);
 
     memcpy(temp, original, MAX * sizeof(struct item));
     inicio = clock();
     quicksort_meio(temp, 0, MAX - 1);
     fim = clock();
-    tempos[i].tempo_quick_crescente_meio =
-        ((double)(fim - inicio)) / CLOCKS_PER_SEC;
+    tempos[i].tempo_quick_crescente_meio = ((double)(fim - inicio)) / CLOCKS_PER_SEC;
+    printf("QuickSort Meio %d: %f\n", i, tempos[i].tempo_quick_crescente_meio);
 
     printf("Rodada %d/20 (Semente %d) concluida.\n", i + 1, semente[i]);
   }
